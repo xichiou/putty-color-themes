@@ -124,7 +124,7 @@ while( !is.AtEndOfStream ){
 is.Close();
 
 var WSHShell = WScript.CreateObject("WScript.Shell");
-
+// 只測試某個 session   /Sessions\\xx.xx.xx.xx\\Colour(.*?)$/
 var reg = new Registry(Registry.HKEY_CURRENT_USER)
       , rootKey = 'Software\\SimonTatham\\PuTTY\\Sessions'
       , keyRegex = /Sessions\\(.*?)\\Colour(.*?)$/
@@ -134,6 +134,17 @@ var reg = new Registry(Registry.HKEY_CURRENT_USER)
           var m = keyMatch.split("\\");
 		  var hashkey = m[m.length-1];
 		  WSHShell.RegWrite("HKEY_CURRENT_USER\\"+path,Colours[hashkey],"REG_SZ");
+		  // WScript.Echo("HKEY_CURRENT_USER\\"+path);
+		  if (m[m.length-1]=="Colour1"){
+			  var session_name = m[m.length-2];
+			  // 指定字形名稱
+			  WSHShell.RegWrite("HKEY_CURRENT_USER\\"+rootKey+"\\"+session_name+"\\Font","Source Code Pro","REG_SZ");
+			  // 指定字形大小
+			  WSHShell.RegWrite("HKEY_CURRENT_USER\\"+rootKey+"\\"+session_name+"\\FontQuality",1,"REG_DWORD");
+			  // 指定反鋸齒
+			  WSHShell.RegWrite("HKEY_CURRENT_USER\\"+rootKey+"\\"+session_name+"\\FontHeight",14,"REG_DWORD");
+			  // WScript.Echo("HKEY_CURRENT_USER\\"+rootKey+"\\"+session_name+"\\Font");
+		  }
         }
       return true; 
     });
